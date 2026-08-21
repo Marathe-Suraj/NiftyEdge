@@ -1,0 +1,30 @@
+@model TradeSignal
+@{
+    var isLong = Model.Direction == NiftyEdge.Core.Models.TradeDirection.Long;
+    var directionClass = isLong ? "signal-long" : "signal-short";
+}
+<div class="signal-card @directionClass p-3 mb-2" data-signal-id="@Model.SignalId">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
+        <div>
+            <span class="badge @(isLong ? "text-bg-success" : "text-bg-danger")">@(isLong ? "LONG" : "SHORT")</span>
+            <span class="fw-semibold ms-1">@Model.StrategyName</span>
+            <span class="text-muted small ms-1">(@(Model.TimeFrame == NiftyEdge.Core.Models.TimeFrame.FifteenMinute ? "15m" : "1h"))</span>
+        </div>
+        <span class="badge @SignalStatusBadge.CssClass(Model.Status) signal-status">@Model.Status</span>
+    </div>
+    <div class="signal-levels mt-2 small d-flex flex-wrap column-gap-3 row-gap-1">
+        <span>Entry: <strong>@Model.EntryPrice.ToString("N2")</strong></span>
+        <span>SL: <strong class="text-danger">@Model.StopLoss.ToString("N2")</strong></span>
+        <span>T1: <strong class="text-success">@Model.Target1.ToString("N2")</strong></span>
+        <span>T2: <strong class="text-success">@Model.Target2.ToString("N2")</strong></span>
+        <span>R:R 1:@Model.RiskReward.ToString("N2")</span>
+    </div>
+    <div class="d-flex align-items-center gap-2 mt-2">
+        <span class="text-muted small text-nowrap">Confidence</span>
+        <div class="progress flex-grow-1" role="progressbar" aria-label="Confidence score" aria-valuenow="@Model.ConfidenceScore" aria-valuemin="0" aria-valuemax="100" style="height: 6px;">
+            <div class="progress-bar @(Model.ConfidenceScore >= 70 ? "bg-success" : Model.ConfidenceScore >= 40 ? "bg-warning" : "bg-danger")" style="width: @Model.ConfidenceScore%"></div>
+        </div>
+        <span class="small fw-semibold text-nowrap">@Model.ConfidenceScore%</span>
+    </div>
+    <div class="signal-rationale text-muted small mt-2">@Model.Rationale</div>
+</div>

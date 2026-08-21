@@ -1,0 +1,13 @@
+@model SignalHistoryViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+}
+
+@if (ViewBag.DatabaseError == true)
+{
+    <div class="alert alert-danger">Could not load crypto signal history from the database.</div>
+}
+else
+{
+    <partial name="_SignalHistoryPanel" model="Model" />
+}

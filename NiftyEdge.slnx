@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NiftyEdge.Core/NiftyEdge.Core.csproj" />
+    <Project Path="src/NiftyEdge.CryptoTrading/NiftyEdge.CryptoTrading.csproj" />
+    <Project Path="src/NiftyEdge.Data/NiftyEdge.Data.csproj" />
+    <Project Path="src/NiftyEdge.Web/NiftyEdge.Web.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,41 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="d-flex justify-content-center">
+    <div class="card" style="max-width: 640px; width: 100%;">
+        <div class="card-body p-4 p-md-5 text-center">
+            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle bg-danger-subtle text-danger" style="width: 64px; height: 64px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <h4 class="fw-bold">Something went wrong</h4>
+            <p class="text-muted">An error occurred while processing your request.</p>
+
+            @if (Model.ShowRequestId)
+            {
+                <p class="small">
+                    <span class="text-muted">Request ID:</span> <code>@Model.RequestId</code>
+                </p>
+            }
+
+            <hr class="my-4" />
+
+            <p class="small text-muted text-start mb-1">
+                Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+            </p>
+            <p class="small text-muted text-start mb-0">
+                <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
+                It can result in displaying sensitive information from exceptions to end users.
+                For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
+                and restarting the app.
+            </p>
+
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-primary mt-4 px-4">Back to Dashboard</a>
+        </div>
+    </div>
+</div>

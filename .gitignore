@@ -1,0 +1,37 @@
+## Build output
+**/bin/
+**/obj/
+artifacts/
+TestResults/
+
+## Visual Studio / IDE
+.vs/
+*.user
+*.suo
+.idea/
+
+## Logs
+**/logs/
+*.log
+
+## Secrets / local credentials
+Authentication.txt
+.env
+**/.env
+appsettings.*.local.json
+**/appsettings.*.local.json
+
+## Publish profiles (machine-specific, may contain credentials)
+*.publishSettings
+*.PublishSettings
+**/Properties/PublishProfiles/*.pubxml
+**/Properties/PublishProfiles/*.pubxml.user
+
+## Backtest artifacts
+backtest_trades.csv
+BACKTEST_REPORT.md
+backtests/reports/
+
+## OS
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,378 @@
+/* ==========================================================================
+   NiftyEdge - Light theme design system
+   Built on top of Bootstrap 5.3 CSS variables — no third-party UI libraries.
+   ========================================================================== */
+
+:root {
+  --ne-bg: #f4f6fb;
+  --ne-surface: #ffffff;
+  --ne-border: #e6e9f2;
+  --ne-border-strong: #d7dcea;
+  --ne-text-muted: #6b7280;
+  --ne-shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --ne-shadow: 0 4px 16px rgba(16, 24, 40, 0.06);
+  --ne-shadow-lg: 0 12px 28px rgba(16, 24, 40, 0.10);
+  --ne-radius: 0.9rem;
+  --ne-radius-sm: 0.6rem;
+  --ne-primary: #3457ea;
+  --ne-primary-dark: #2743c2;
+  --ne-up: #16a34a;
+  --ne-down: #e11d48;
+
+  --bs-body-bg: var(--ne-bg);
+  --bs-primary: var(--ne-primary);
+  --bs-primary-rgb: 52, 87, 234;
+}
+
+html {
+  font-size: 15px;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--ne-bg);
+  color: #1f2430;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  box-shadow: var(--ne-shadow-sm);
+  z-index: 1030;
+}
+
+.navbar-brand {
+  color: #1f2430 !important;
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--ne-primary), #6f8bff);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(52, 87, 234, 0.35);
+}
+
+.navbar .nav-link {
+  color: #4b5262;
+  font-weight: 500;
+  border-radius: var(--ne-radius-sm);
+  padding: 0.5rem 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.navbar .nav-link:hover {
+  background-color: #eef1fb;
+  color: var(--ne-primary-dark);
+}
+
+.navbar .nav-link.active {
+  background-color: #e8ecfd;
+  color: var(--ne-primary-dark);
+}
+
+.nav-link-icon {
+  margin-right: 0.4rem;
+  flex-shrink: 0;
+}
+
+/* ---------- Page shell ---------- */
+main {
+  min-height: 0;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  border: 1px solid var(--ne-border);
+  border-radius: var(--ne-radius);
+  box-shadow: var(--ne-shadow-sm);
+}
+
+.instrument-card {
+  background-color: var(--ne-surface);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.instrument-card:hover {
+  box-shadow: var(--ne-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.instrument-card .card-header {
+  background-color: var(--ne-surface);
+  border-bottom: 1px solid var(--ne-border);
+  border-top-left-radius: var(--ne-radius) !important;
+  border-top-right-radius: var(--ne-radius) !important;
+  padding: 1rem 1.15rem;
+}
+
+.instrument-card .card-body {
+  padding: 1.15rem;
+}
+
+.instrument-name {
+  font-size: 1.05rem;
+  color: #1f2430;
+}
+
+.instrument-symbol {
+  letter-spacing: 0.02em;
+}
+
+.chart-container {
+  border-radius: var(--ne-radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--ne-border);
+  background-color: #fbfcfe;
+}
+
+/* ---------- Option chain stat strip ---------- */
+.option-chain-strip {
+  border-top: 1px solid var(--ne-border);
+  padding-top: 0.85rem;
+}
+
+.stat-chip {
+  background-color: #f6f8fd;
+  border: 1px solid var(--ne-border);
+  border-radius: var(--ne-radius-sm);
+  padding: 0.4rem 0.7rem;
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 92px;
+}
+
+.stat-chip .stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ne-text-muted);
+}
+
+.stat-chip .stat-value {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+/* ---------- Signal cards ---------- */
+.signals-panel-heading {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ne-text-muted);
+  font-weight: 600;
+}
+
+.signal-card {
+  border: 1px solid var(--ne-border);
+  background-color: #fbfcff;
+  border-radius: var(--ne-radius-sm);
+  transition: background-color 0.4s ease;
+}
+
+.signal-card.signal-long {
+  border-left: 4px solid var(--ne-up);
+}
+
+.signal-card.signal-short {
+  border-left: 4px solid var(--ne-down);
+}
+
+.signal-card.flash {
+  animation: flash-highlight 1.2s ease-out;
+}
+
+@keyframes flash-highlight {
+  0% { background-color: #dcf5e4; }
+  100% { background-color: #fbfcff; }
+}
+
+.signal-levels span {
+  display: inline-block;
+}
+
+.no-signal-message {
+  border: 1px dashed var(--ne-border-strong);
+  border-radius: var(--ne-radius-sm);
+  padding: 0.9rem;
+  text-align: center;
+}
+
+.ltp-value {
+  font-family: 'Consolas', 'Courier New', monospace;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Tables ---------- */
+.table-modern {
+  --bs-table-bg: var(--ne-surface);
+  --bs-table-striped-bg: #f7f9fd;
+  --bs-table-hover-bg: #eef3ff;
+  margin-bottom: 0;
+}
+
+.table-modern thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ne-text-muted);
+  border-bottom: 1px solid var(--ne-border-strong);
+  background: linear-gradient(180deg, #fbfcff 0%, #f3f6fc 100%);
+  white-space: nowrap;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+.table-modern tbody td {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-color: #eef1f7;
+  vertical-align: middle;
+}
+
+.table-modern tbody tr:hover {
+  background-color: var(--bs-table-hover-bg);
+}
+
+.signal-history-card {
+  overflow: hidden;
+}
+
+.signal-history-footer {
+  background-color: #fbfcff;
+  border-top: 1px solid var(--ne-border);
+}
+
+.signal-history-footer .pagination .page-link {
+  border-radius: 0.45rem;
+  margin: 0 0.12rem;
+  border-color: var(--ne-border);
+  color: #42526e;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.signal-history-footer .pagination .page-item.active .page-link {
+  background-color: var(--ne-primary);
+  border-color: var(--ne-primary);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(52, 87, 234, 0.25);
+}
+
+.signal-history-footer .pagination .page-item.disabled .page-link {
+  color: #9aa3b5;
+  background-color: #f8f9fd;
+}
+
+.confidence-meter {
+  position: relative;
+  width: 5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: #edf2ff;
+  border: 1px solid #cbd8ff;
+  overflow: hidden;
+}
+
+.confidence-meter-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(90deg, #c9d8ff, #9db8ff);
+  border-radius: inherit;
+}
+
+.confidence-meter-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #17346f;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+/* ---------- Filter / toolbar card ---------- */
+.filter-bar {
+  background-color: var(--ne-surface);
+  border: 1px solid var(--ne-border);
+  border-radius: var(--ne-radius);
+  padding: 1rem;
+}
+
+/* ---------- Page heading ---------- */
+.page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.page-heading h4 {
+  margin-bottom: 0.15rem;
+}
+
+.page-subtitle {
+  color: var(--ne-text-muted);
+  font-size: 0.9rem;
+}
+
+/* ---------- Forms ---------- */
+.form-control:focus,
+.form-select:focus {
+  border-color: #adbdfb;
+  box-shadow: 0 0 0 0.2rem rgba(52, 87, 234, 0.15);
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ---------- Settings tabs ---------- */
+.settings-tabs {
+  gap: 0.35rem;
+  border-bottom: 1px solid var(--ne-border);
+  padding-bottom: 0.35rem;
+}
+
+.settings-tabs .nav-link {
+  color: #5b6475;
+  font-weight: 600;
+  border-radius: var(--ne-radius-sm);
+  padding: 0.55rem 0.9rem;
+  border: 1px solid transparent;
+}
+
+.settings-tabs .nav-link:hover {
+  background-color: #eef1fb;
+  color: var(--ne-primary-dark);
+}
+
+.settings-tabs .nav-link.active {
+  background-color: #e8ecfd;
+  color: var(--ne-primary-dark);
+  border-color: #d7defe;
+}
+
+.settings-section-card {
+  border: 1px solid var(--ne-border);
+  box-shadow: var(--ne-shadow-sm);
+}
+
+.settings-section-header h6 {
+  letter-spacing: 0.01em;
+}

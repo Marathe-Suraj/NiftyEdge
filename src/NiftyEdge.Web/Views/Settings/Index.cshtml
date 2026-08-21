@@ -1,0 +1,69 @@
+@model SettingsViewModel
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div class="page-heading">
+    <div>
+        <h4 class="fw-bold">Settings</h4>
+        <div class="page-subtitle">Manage Telegram alerts and crypto trading.</div>
+    </div>
+</div>
+
+<partial name="_SettingsTabs" model="Model.ActiveTab" />
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div class="alert @(Model.IsStatusError ? "alert-danger" : "alert-success") d-flex align-items-center gap-2" role="alert">
+        @Model.StatusMessage
+    </div>
+}
+
+<div class="card settings-section-card">
+    <div class="card-body p-4">
+        <div class="settings-section-header mb-3">
+            <h6 class="fw-bold mb-1">Telegram Alerts</h6>
+            <div class="text-muted small">Configure delivery of live signal alerts to your Telegram chat.</div>
+        </div>
+
+        <form asp-controller="Settings" asp-action="Save" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="row g-3">
+                <div class="col-12 col-lg-6">
+                    <label asp-for="TelegramBotToken" class="form-label"></label>
+                    <input asp-for="TelegramBotToken" class="form-control" placeholder="123456789:AAExampleTokenFromBotFather" />
+                    <div class="form-text">
+                        Create a free bot via <a href="https://core.telegram.org/bots#how-do-i-create-a-bot" target="_blank" rel="noopener">@@BotFather</a> on Telegram to get a token.
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <label asp-for="TelegramChatId" class="form-label"></label>
+                    <input asp-for="TelegramChatId" class="form-control" placeholder="e.g. 123456789" />
+                    <div class="form-text">Message your bot once, then check <code>https://api.telegram.org/bot&lt;token&gt;/getUpdates</code> to find your chat ID.</div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label asp-for="AlertConfidenceThreshold" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="AlertConfidenceThreshold" type="number" min="0" max="100" class="form-control" />
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <div class="form-text">Only signals at or above this confidence score trigger a Telegram alert.</div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <button type="submit" class="btn btn-primary px-4">Save Settings</button>
+                <button type="submit" asp-action="SendTest" class="btn btn-outline-secondary px-4">
+                    Save &amp; Send Test Message
+                </button>
+            </div>
+            <div class="form-text mt-2">
+                The test message uses the same delivery path as live alerts, so a success here confirms
+                real signal alerts will arrive too.
+            </div>
+        </form>
+    </div>
+</div>

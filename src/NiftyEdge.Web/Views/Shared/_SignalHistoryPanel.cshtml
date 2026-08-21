@@ -1,0 +1,219 @@
+@model SignalHistoryViewModel
+@{
+    var openCount = Model.OpenCount;
+    var stopHitCount = Model.StopHitCount;
+    var targetHitCount = Model.TargetHitCount;
+    var hasFilters = Model.SelectedInstrumentId.HasValue
+        || !string.IsNullOrEmpty(Model.SelectedStrategyName)
+        || Model.SelectedFromDate.HasValue
+        || Model.SelectedToDate.HasValue;
+    var controller = Model.ControllerName;
+}
+
+<div class="page-heading">
+    <div>
+        <h4 class="fw-bold">@Model.PageTitle</h4>
+        <div class="page-subtitle">@Model.PageSubtitle</div>
+    </div>
+</div>
+
+<form method="get" asp-controller="@controller" asp-action="Index" class="filter-bar row g-2 align-items-end mb-3">
+    <div class="col-auto">
+        <label class="form-label mb-1">Instrument</label>
+        <select name="instrumentId" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="">All instruments</option>
+            @foreach (var instrument in Model.Instruments)
+            {
+                <option value="@instrument.InstrumentId" selected="@(Model.SelectedInstrumentId == instrument.InstrumentId)">@instrument.DisplayName</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <label class="form-label mb-1">Strategy</label>
+        <select name="strategyName" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="">All strategies</option>
+            @foreach (var strategy in Model.StrategyNames)
+            {
+                <option value="@strategy" selected="@(Model.SelectedStrategyName == strategy)">@strategy</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <label class="form-label mb-1">From date</label>
+        <input type="date" name="fromDate" value="@Model.SelectedFromDate?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" onchange="this.form.submit()" />
+    </div>
+    <div class="col-auto">
+        <label class="form-label mb-1">To date</label>
+        <input type="date" name="toDate" value="@Model.SelectedToDate?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" onchange="this.form.submit()" />
+    </div>
+    @if (Model.SelectedFromDate.HasValue || Model.SelectedToDate.HasValue)
+    {
+        <div class="col-auto">
+            <a href="@Url.Action("Index", controller, new { instrumentId = Model.SelectedInstrumentId, strategyName = Model.SelectedStrategyName })"
+               class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1"
+               title="Clear dates">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="1 4 1 10 7 10"></polyline>
+                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+                Clear dates
+            </a>
+        </div>
+    }
+    <div class="col-auto ms-auto">
+        <div class="d-flex gap-2">
+            <div class="stat-chip">
+                <span class="stat-label">Open</span>
+                <span class="stat-value text-info">@openCount</span>
+            </div>
+            <div class="stat-chip">
+                <span class="stat-label">Stoploss Hit</span>
+                <span class="stat-value text-danger">@stopHitCount</span>
+            </div>
+            <div class="stat-chip">
+                <span class="stat-label">Target Hit</span>
+                <span class="stat-value text-success">@targetHitCount</span>
+            </div>
+        </div>
+    </div>
+    @if (Model.HasInvalidDateRange)
+    {
+        <div class="col-12">
+            <div class="text-danger small">From date must be on or before To date.</div>
+        </div>
+    }
+</form>
+
+<div class="card signal-history-card">
+    <div class="table-responsive">
+        <table class="table table-modern table-striped table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Generated</th>
+                    <th>Instrument</th>
+                    <th>Strategy</th>
+                    <th>Direction</th>
+                    <th>Entry</th>
+                    <th>SL</th>
+                    <th>T1</th>
+                    <th>T2</th>
+                    <th>R:R</th>
+                    <th>Confidence</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Signals.Any())
+                {
+                    <tr>
+                        <td colspan="11" class="text-muted text-center py-5">
+                            @(hasFilters ? "No signals match the selected filters." : "No signals yet.")
+                        </td>
+                    </tr>
+                }
+                @foreach (var signal in Model.Signals)
+                {
+                    var isLong = signal.Direction == TradeDirection.Long;
+                    <tr>
+                        <td class="small text-nowrap text-muted">@MarketHoursCalculator.UtcToIst(signal.GeneratedAt).ToString("dd-MMM hh:mm tt")</td>
+                        <td class="fw-semibold text-nowrap">@signal.InstrumentSymbol</td>
+                        <td class="small">@signal.StrategyName</td>
+                        <td>
+                            <span class="badge rounded-pill @(isLong ? "text-bg-success" : "text-bg-danger")">
+                                @(isLong ? "LONG" : "SHORT")
+                            </span>
+                        </td>
+                        <td class="font-monospace small">@signal.EntryPrice.ToString("N2")</td>
+                        <td class="font-monospace small text-danger">@signal.StopLoss.ToString("N2")</td>
+                        <td class="font-monospace small text-success">@signal.Target1.ToString("N2")</td>
+                        <td class="font-monospace small text-success">@signal.Target2.ToString("N2")</td>
+                        <td class="small">1:@signal.RiskReward.ToString("N2")</td>
+                        <td>
+                            <div class="confidence-meter" title="@signal.ConfidenceScore%">
+                                <div class="confidence-meter-bar" style="width: @signal.ConfidenceScore%"></div>
+                                <span class="confidence-meter-label">@signal.ConfidenceScore%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge rounded-pill @SignalStatusBadge.CssClass(signal.Status)">@signal.Status</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.TotalCount > 0)
+    {
+        <div class="card-footer signal-history-footer d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="small text-muted">
+                Showing <span class="fw-semibold text-body">@Model.FromRow</span>–<span class="fw-semibold text-body">@Model.ToRow</span>
+                of <span class="fw-semibold text-body">@Model.TotalCount</span> signals
+            </div>
+
+            @if (Model.TotalPages > 1)
+            {
+                <nav aria-label="Signal history pages">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : null)">
+                            <a class="page-link"
+                               href="@(Model.PageNumber <= 1 ? "#" : Url.Action("Index", controller, new { instrumentId = Model.SelectedInstrumentId, strategyName = Model.SelectedStrategyName, fromDate = Model.SelectedFromDate?.ToString("yyyy-MM-dd"), toDate = Model.SelectedToDate?.ToString("yyyy-MM-dd"), page = Model.PageNumber - 1 }))"
+                               aria-label="Previous"
+                               tabindex="@(Model.PageNumber <= 1 ? -1 : null)"
+                               aria-disabled="@(Model.PageNumber <= 1 ? "true" : null)">
+                                Prev
+                            </a>
+                        </li>
+
+                        @{
+                            var startPage = Math.Max(1, Model.PageNumber - 2);
+                            var endPage = Math.Min(Model.TotalPages, startPage + 4);
+                            startPage = Math.Max(1, endPage - 4);
+                        }
+
+                        @if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", controller, new { instrumentId = Model.SelectedInstrumentId, strategyName = Model.SelectedStrategyName, fromDate = Model.SelectedFromDate?.ToString("yyyy-MM-dd"), toDate = Model.SelectedToDate?.ToString("yyyy-MM-dd"), page = 1 })">1</a>
+                            </li>
+                            @if (startPage > 2)
+                            {
+                                <li class="page-item disabled"><span class="page-link">…</span></li>
+                            }
+                        }
+
+                        @for (var p = startPage; p <= endPage; p++)
+                        {
+                            <li class="page-item @(p == Model.PageNumber ? "active" : null)">
+                                <a class="page-link"
+                                   href="@Url.Action("Index", controller, new { instrumentId = Model.SelectedInstrumentId, strategyName = Model.SelectedStrategyName, fromDate = Model.SelectedFromDate?.ToString("yyyy-MM-dd"), toDate = Model.SelectedToDate?.ToString("yyyy-MM-dd"), page = p })"
+                                   aria-current="@(p == Model.PageNumber ? "page" : null)">@p</a>
+                            </li>
+                        }
+
+                        @if (endPage < Model.TotalPages)
+                        {
+                            @if (endPage < Model.TotalPages - 1)
+                            {
+                                <li class="page-item disabled"><span class="page-link">…</span></li>
+                            }
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", controller, new { instrumentId = Model.SelectedInstrumentId, strategyName = Model.SelectedStrategyName, fromDate = Model.SelectedFromDate?.ToString("yyyy-MM-dd"), toDate = Model.SelectedToDate?.ToString("yyyy-MM-dd"), page = Model.TotalPages })">@Model.TotalPages</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : null)">
+                            <a class="page-link"
+                               href="@(Model.PageNumber >= Model.TotalPages ? "#" : Url.Action("Index", controller, new { instrumentId = Model.SelectedInstrumentId, strategyName = Model.SelectedStrategyName, fromDate = Model.SelectedFromDate?.ToString("yyyy-MM-dd"), toDate = Model.SelectedToDate?.ToString("yyyy-MM-dd"), page = Model.PageNumber + 1 }))"
+                               aria-label="Next"
+                               tabindex="@(Model.PageNumber >= Model.TotalPages ? -1 : null)"
+                               aria-disabled="@(Model.PageNumber >= Model.TotalPages ? "true" : null)">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        </div>
+    }
+</div>
