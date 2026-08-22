@@ -23,17 +23,10 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore
-        run: dotnet restore NiftyEdge.slnx --runtime win-x86
-
-      - name: Build
-        run: dotnet build NiftyEdge.slnx --configuration Release --no-restore --runtime win-x86
-
       - name: Publish
         run: >
           dotnet publish src/NiftyEdge.Web/NiftyEdge.Web.csproj
           --configuration Release
-          --no-restore
           --output "${{ github.workspace }}\publish"
           --runtime win-x86
           --self-contained false
