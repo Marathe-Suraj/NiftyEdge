@@ -24,10 +24,10 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore
-        run: dotnet restore NiftyEdge.slnx
+        run: dotnet restore NiftyEdge.slnx --runtime win-x86
 
       - name: Build
-        run: dotnet build NiftyEdge.slnx --configuration Release --no-restore
+        run: dotnet build NiftyEdge.slnx --configuration Release --no-restore --runtime win-x86
 
       - name: Publish
         run: >
